@@ -79,3 +79,16 @@ export async function deletePost(req, res) {
     return res.status(500).json({ message: "Error deleting post" });
   }
 }
+export async function getPost(req, res) {
+  try {
+    const { id } = req.params;
+
+    const post = await Post.findOne({ _id: id, user: req.user.id });
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    return res.json(post);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Error fetching post" });
+  }
+}

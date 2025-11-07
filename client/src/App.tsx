@@ -1,28 +1,62 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import Login from "./pages/Login";
-import CreatePost from "./pages/CreatePost";
-import Dashboard from "./pages/Dashboard";
-import Posts from "./pages/Posts";
+import { Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+
+import { Dashboard } from "./pages/Dashboard";
+import { Login } from "./pages/Login";
+import { Register } from "./pages/Register";
+import { PostsList } from "../Components/PostsList";
+import { CreatePost } from "./pages/CreatePost";
+
+import { AuthProvider } from "../context/AuthContext";
+import { Navbar } from "../Components/Navbar";
+import { ProtectedRoute } from "../Components/ProtectedRoute";
 
 function App() {
-  const isAuthenticated = !!localStorage.getItem("token"); // simple check
-
   return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route
-        path="/"
-        element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
-      />
-      <Route
-        path="/posts"
-        element={isAuthenticated ? <Posts /> : <Navigate to="/login" />}
-      />
-      <Route
-        path="/create"
-        element={isAuthenticated ? <CreatePost /> : <Navigate to="/login" />}
-      />
-    </Routes>
+    <AuthProvider>
+      <Navbar />
+      <Toaster position="top-right" />
+
+      <Routes>
+        {/* Public routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+
+        {/* Protected routes */}
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/posts"
+          element={
+            <ProtectedRoute>
+              <PostsList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/posts/create"
+          element={
+            <ProtectedRoute>
+              <CreatePost />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/posts/edit/:id"
+          element={
+            <ProtectedRoute>
+              <CreatePost />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </AuthProvider>
   );
 }
 

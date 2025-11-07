@@ -1,8 +1,8 @@
 // CreatePost.tsx
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { API_URL } from "../api/api";
-import { useAuth } from "../../context/AuthContext";
+import { API_URL } from "../src/api/api";
+import { useAuth } from "../context/AuthContext";
 import toast from "react-hot-toast";
 
 interface Post {
@@ -15,10 +15,10 @@ interface Post {
 
 const PLATFORMS = ["Twitter", "Facebook", "Instagram"];
 
-export const CreatePost = () => {
+export const CreateEditPost = () => {
   const { token } = useAuth();
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { id } = useParams(); // if editing, id will exist
 
   const [post, setPost] = useState<Post>({
     content: "",
@@ -30,26 +30,24 @@ export const CreatePost = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Fetch existing post if editing
+  // If editing, fetch the existing post
   useEffect(() => {
-    if (!id || !token) return;
-
+    if (!id) return;
     const fetchPost = async () => {
       try {
         const res = await fetch(`${API_URL}/posts/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error("Failed to fetch post");
-
         const data = await res.json();
         setPost({
-          content: data.content || "",
-          platform: Array.isArray(data.platform) ? data.platform : [], // <-- safe
-          scheduleAt: data.scheduleAt ? data.scheduleAt.slice(0, 16) : "",
+          content: data.content,
+          platform: data.platform,
+          scheduleAt: data.scheduleAt.slice(0, 16), // for input type=datetime-local
           imageUrl: data.imageUrl || "",
         });
       } catch (err: any) {
-        toast.error(err.message);
+        setError(err.message);
       }
     };
     fetchPost();
@@ -59,13 +57,7 @@ export const CreatePost = () => {
     e.preventDefault();
     setError("");
 
-    if (!token) return toast.error("Not authenticated");
-
-    if (
-      !post.content ||
-      post.content.trim().length === 0 ||
-      post.content.length > 500
-    )
+    if (!post.content || post.content.length > 500)
       return toast.error("Content is required and max 500 characters");
 
     if (post.platform.length === 0)
@@ -85,7 +77,7 @@ export const CreatePost = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ ...post, content: post.content.trim() }),
+        body: JSON.stringify(post),
       });
 
       if (!res.ok) {
@@ -93,7 +85,7 @@ export const CreatePost = () => {
         throw new Error(err.message || "Failed to save post");
       }
 
-      navigate("/posts");
+      navigate("/posts"); // go back to posts list
     } catch (err: any) {
       toast.error(err.message);
     } finally {
@@ -121,11 +113,14 @@ export const CreatePost = () => {
           <label className="block mb-1">Content</label>
           <textarea
             className="w-full border p-2 rounded"
-            value={post.content}
+            value={post.content || ""} // fallback if undefined
             onChange={(e) => setPost({ ...post, content: e.target.value })}
-            maxLength={500}
+            maxLength={500} // Prevent typing more than 500
             required
           />
+          <p className="text-sm text-gray-500">
+            {(post.content || "").length}/500 characters
+          </p>
         </div>
 
         <div>
@@ -150,8 +145,8 @@ export const CreatePost = () => {
             type="datetime-local"
             className="w-full border p-2 rounded"
             value={post.scheduleAt}
-            min={new Date().toISOString().slice(0, 16)}
             onChange={(e) => setPost({ ...post, scheduleAt: e.target.value })}
+            maxLength={500}
             required
           />
         </div>

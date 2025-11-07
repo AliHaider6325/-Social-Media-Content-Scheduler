@@ -1,24 +1,30 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
 import { API_URL } from "../api/api";
 
-export const Login = () => {
+export const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const { setToken } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setError("");
+    setSuccess("");
 
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/auth/login`, {
+      const res = await fetch(`${API_URL}/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -28,16 +34,11 @@ export const Login = () => {
 
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err.message || "Login failed");
+        throw new Error(err.message || "Registration failed");
       }
 
-      const data = await res.json();
-
-      // Store token in context and localStorage
-      setToken(data.token);
-      localStorage.setItem("token", data.token);
-
-      navigate("/"); // redirect to dashboard
+      setSuccess("Registration successful! Redirecting to login...");
+      setTimeout(() => navigate("/login"), 1500);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -51,9 +52,10 @@ export const Login = () => {
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded shadow-md w-96"
       >
-        <h2 className="text-2xl mb-6 text-center">Login</h2>
+        <h2 className="text-2xl mb-6 text-center">Register</h2>
 
         {error && <p className="text-red-500 mb-4">{error}</p>}
+        {success && <p className="text-green-500 mb-4">{success}</p>}
 
         <div className="mb-4">
           <label className="block mb-1">Email</label>
@@ -66,7 +68,7 @@ export const Login = () => {
           />
         </div>
 
-        <div className="mb-6">
+        <div className="mb-4">
           <label className="block mb-1">Password</label>
           <input
             type="password"
@@ -77,12 +79,23 @@ export const Login = () => {
           />
         </div>
 
+        <div className="mb-6">
+          <label className="block mb-1">Confirm Password</label>
+          <input
+            type="password"
+            className="w-full border px-3 py-2 rounded"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+          />
+        </div>
+
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+          className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600"
           disabled={loading}
         >
-          {loading ? "Logging in..." : "Login"}
+          {loading ? "Registering..." : "Register"}
         </button>
       </form>
     </div>
