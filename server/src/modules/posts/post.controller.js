@@ -4,10 +4,17 @@ export const createPost = async (req, res) => {
   try {
     const { content, platforms, scheduleAt, imageUrl } = req.body;
 
+    // Ensure platforms is an array
+    const platformsArray = Array.isArray(platforms)
+      ? platforms
+      : platforms
+      ? [platforms]
+      : [];
+
     const newPost = await Post.create({
       user: req.user._id,
       content,
-      platforms,
+      platforms: platformsArray,
       scheduleAt,
       imageUrl
     });
@@ -17,6 +24,7 @@ export const createPost = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
 
 export async function getPosts(req, res) {
   try {
@@ -51,12 +59,16 @@ export async function getPosts(req, res) {
 export async function updatePost(req, res) {
   try {
     const { id } = req.params;
-
     const post = await Post.findOne({ _id: id, user: req.user.id });
     if (!post) return res.status(404).json({ message: "Post not found or not owned" });
 
     if (post.status === "published")
       return res.status(400).json({ message: "Cannot edit published post" });
+
+    // Ensure platforms is always an array
+    if (req.body.platforms && !Array.isArray(req.body.platforms)) {
+      req.body.platforms = [req.body.platforms];
+    }
 
     Object.assign(post, req.body);
     await post.save();
@@ -66,6 +78,7 @@ export async function updatePost(req, res) {
     return res.status(500).json({ message: "Error updating post" });
   }
 }
+
 
 export async function deletePost(req, res) {
   try {

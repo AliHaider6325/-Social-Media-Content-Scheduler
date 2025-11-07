@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 interface Post {
   _id?: string;
   content: string;
-  platform: string[];
+  platforms: string[];
   scheduleAt: string;
   imageUrl?: string;
 }
@@ -22,7 +22,7 @@ export const CreatePost = () => {
 
   const [post, setPost] = useState<Post>({
     content: "",
-    platform: [],
+    platforms: [],
     scheduleAt: "",
     imageUrl: "",
   });
@@ -30,7 +30,6 @@ export const CreatePost = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Fetch existing post if editing
   useEffect(() => {
     if (!id || !token) return;
 
@@ -44,7 +43,7 @@ export const CreatePost = () => {
         const data = await res.json();
         setPost({
           content: data.content || "",
-          platform: Array.isArray(data.platform) ? data.platform : [], // <-- safe
+          platforms: Array.isArray(data.platforms) ? data.platforms : [], // <-- safe
           scheduleAt: data.scheduleAt ? data.scheduleAt.slice(0, 16) : "",
           imageUrl: data.imageUrl || "",
         });
@@ -55,22 +54,28 @@ export const CreatePost = () => {
     fetchPost();
   }, [id, token]);
 
+  const handlePlatformChange = (platform: string) => {
+    setPost((prev) => ({
+      ...prev,
+      platforms: prev.platforms.includes(platform)
+        ? prev.platforms.filter((p) => p !== platform)
+        : [...prev.platforms, platform],
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
     if (!token) return toast.error("Not authenticated");
-
     if (
       !post.content ||
       post.content.trim().length === 0 ||
       post.content.length > 500
     )
       return toast.error("Content is required and max 500 characters");
-
-    if (post.platform.length === 0)
+    if (!post.platforms || post.platforms.length === 0)
       return toast.error("Select at least one platform");
-
     if (!post.scheduleAt || new Date(post.scheduleAt) <= new Date())
       return toast.error("Schedule date must be in the future");
 
@@ -101,15 +106,6 @@ export const CreatePost = () => {
     }
   };
 
-  const handlePlatformChange = (platform: string) => {
-    setPost((prev) => ({
-      ...prev,
-      platform: prev.platform.includes(platform)
-        ? prev.platform.filter((p) => p !== platform)
-        : [...prev.platform, platform],
-    }));
-  };
-
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow rounded">
       <h2 className="text-xl font-bold mb-4">
@@ -135,7 +131,7 @@ export const CreatePost = () => {
               <label key={p} className="flex items-center gap-1">
                 <input
                   type="checkbox"
-                  checked={post.platform.includes(p)}
+                  checked={post.platforms.includes(p)}
                   onChange={() => handlePlatformChange(p)}
                 />
                 {p}

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 interface Post {
   _id: string;
   content: string;
-  platform: string[];
+  platforms: string[];
   scheduleAt: string;
   status: string;
 }
@@ -86,9 +86,9 @@ export function Dashboard() {
               <tr key={post._id}>
                 <td>{post.content}</td>
                 <td>
-                  {Array.isArray(post.platform)
-                    ? post.platform.join(", ")
-                    : "N/A"}
+                  {Array.isArray(post.platforms)
+                    ? post.platforms.join(", ")
+                    : "Instagram"}
                 </td>
                 <td>{new Date(post.scheduleAt).toLocaleString()}</td>
               </tr>

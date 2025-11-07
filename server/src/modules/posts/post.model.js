@@ -13,7 +13,7 @@ const postSchema = new mongoose.Schema({
   },
   platforms: [{
     type: String,
-    enum: ["twitter", "facebook", "instagram"],
+    enum: ["Twitter", "Facebook", "Instagram"],
     required: true
   }],
   scheduleAt: {

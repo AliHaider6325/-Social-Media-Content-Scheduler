@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 interface Post {
   _id: string;
   content: string;
-  platform: string[];
+  platforms: string[];
   scheduleAt: string;
   status: string;
 }
@@ -181,7 +181,7 @@ export function PostsList() {
                     </div>
                   </td>
                   <td className="border px-2 py-1">
-                    {post.platform?.join(", ")}
+                    {post.platforms?.join(", ")}
                   </td>
                   <td className="border px-2 py-1">
                     {new Date(post.scheduleAt).toLocaleString()}
