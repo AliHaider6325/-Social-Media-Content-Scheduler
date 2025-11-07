@@ -5,6 +5,9 @@ import cors from 'cors';
 import morgan from 'morgan';
 
 import authRoutes from './modules/auth/auth.routes.js';
+import postRoutes from "./modules/posts/post.routes.js";
+import dashboardRoutes from "./modules/dashboard/dashboard.routes.js";
+
 
 const app = express();
 
@@ -18,8 +21,12 @@ if (process.env.NODE_ENV !== 'production') app.use(morgan('dev'));
 // mount routes
 app.use('/api/auth', authRoutes);
 
+
+app.use("/api/posts", postRoutes);
+
 // health check
 app.get('/api/health', (req, res) => res.json({ ok: true, time: new Date().toISOString() }));
+app.use("/api/dashboard", dashboardRoutes);
 
 // basic fallback
 app.use((req, res) => res.status(404).json({ message: 'Not found' }));

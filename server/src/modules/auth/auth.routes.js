@@ -1,7 +1,9 @@
 // server/src/modules/auth/auth.routes.js
 import express from 'express';
 import { register, login, logout, me } from './auth.controller.js';
-import authMiddleware from '../../middleware/auth.js';
+// import authMiddleware from '../../middleware/auth.middleware.js';
+import authMiddleware from '../../middleware/auth.middleware.js'
+
 
 const router = express.Router();
 
