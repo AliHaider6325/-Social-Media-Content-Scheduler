@@ -1,6 +1,6 @@
 // PostsList.tsx
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 interface Post {
@@ -12,13 +12,26 @@ interface Post {
 }
 
 export function PostsList() {
+  const [filter, setFilter] = useState("all");
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const [expandedPostId, setExpandedPostId] = useState<string | null>(null); // For "Read more"
+  const [expandedPosts, setExpandedPosts] = useState<Record<string, boolean>>(
+    {}
+  );
   const limit = 10;
+  const navigate = useNavigate();
+
+  const toggleExpanded = (id: string) => {
+    setExpandedPosts((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const truncate = (text: string, length = 20) => {
+    if (!text) return "";
+    return text.length <= length ? text : text.slice(0, length) + "...";
+  };
 
   useEffect(() => {
     fetchPosts(page);
@@ -27,7 +40,6 @@ export function PostsList() {
   const fetchPosts = async (page: number) => {
     setLoading(true);
     setError("");
-
     try {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Not authenticated");
@@ -52,7 +64,7 @@ export function PostsList() {
       setTotalPages(data.totalPages || 1);
       setPage(data.page || 1);
     } catch (err: any) {
-      console.error(err);
+      console.error("Failed to fetch posts:", err);
       setError(err.message || "Something went wrong");
       setPosts([]);
     } finally {
@@ -62,42 +74,75 @@ export function PostsList() {
 
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this post?")) return;
+
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(`http://localhost:5000/api/posts/${id}`, {
         method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
+
       if (!res.ok) {
         const err = await res.json();
         throw new Error(err.message || "Failed to delete post");
       }
+
       toast.success("Post deleted successfully");
-      fetchPosts(page); // refresh
+      fetchPosts(page); // Refresh list
     } catch (err: any) {
       toast.error(err.message || "Error deleting post");
     }
   };
 
-  const truncate = (text: string, length = 50) => {
-    if (text.length <= length) return text;
-    return text.slice(0, length) + "...";
-  };
-
-  const toggleExpand = (id: string) => {
-    setExpandedPostId(expandedPostId === id ? null : id);
-  };
-
   const handlePrev = () => {
     if (page > 1) setPage((prev) => prev - 1);
   };
+
   const handleNext = () => {
     if (page < totalPages) setPage((prev) => prev + 1);
   };
 
   return (
     <div className="p-4">
+      <div className="mb-4 flex gap-3">
+        <button
+          onClick={() => setFilter("all")}
+          className={`px-3 py-1 rounded ${
+            filter === "all" ? "bg-black text-white" : "bg-gray-200"
+          }`}
+        >
+          All
+        </button>
+        <button
+          onClick={() => setFilter("pending")}
+          className={`px-3 py-1 rounded ${
+            filter === "pending" ? "bg-black text-white" : "bg-gray-200"
+          }`}
+        >
+          Pending
+        </button>
+        <button
+          onClick={() => setFilter("scheduled")}
+          className={`px-3 py-1 rounded ${
+            filter === "scheduled" ? "bg-black text-white" : "bg-gray-200"
+          }`}
+        >
+          Scheduled
+        </button>
+        <button
+          onClick={() => setFilter("published")}
+          className={`px-3 py-1 rounded ${
+            filter === "published" ? "bg-black text-white" : "bg-gray-200"
+          }`}
+        >
+          published
+        </button>
+      </div>
+
       <h2 className="text-xl font-bold mb-4">All Posts</h2>
+
       {loading && <p>Loading posts...</p>}
       {error && <p className="text-red-500">{error}</p>}
       {!loading && !error && posts.length === 0 && <p>No posts found.</p>}
@@ -114,48 +159,64 @@ export function PostsList() {
             </tr>
           </thead>
           <tbody>
-            {posts.map((post) => (
-              <tr key={post._id}>
-                <td className="border px-2 py-1">
-                  <div className="max-w-xs">
-                    {expandedPostId === post._id
-                      ? post.content
-                      : truncate(post.content)}
-                    {post.content.length > 50 && (
-                      <button
-                        onClick={() => toggleExpand(post._id)}
-                        className="ml-1 text-blue-500 hover:underline"
-                      >
-                        {expandedPostId === post._id
-                          ? "Show less"
-                          : "Read more"}
-                      </button>
-                    )}
-                  </div>
-                </td>
-                <td className="border px-2 py-1">
-                  {post.platform?.join(", ")}
-                </td>
-                <td className="border px-2 py-1">
-                  {new Date(post.scheduleAt).toLocaleString()}
-                </td>
-                <td className="border px-2 py-1">{post.status}</td>
-                <td className="border px-2 py-1 flex gap-2">
-                  <Link
-                    to={`/posts/edit/${post._id}`}
-                    className="text-blue-500 hover:underline"
-                  >
-                    Edit
-                  </Link>
-                  <button
-                    onClick={() => handleDelete(post._id)}
-                    className="text-red-500 hover:underline"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {posts
+              .filter((post) =>
+                filter === "all" ? true : post.status === filter
+              )
+              .map((post) => (
+                <tr key={post._id}>
+                  <td className="border px-2 py-1">
+                    <div className="max-w-xs">
+                      {expandedPosts[post._id]
+                        ? post.content
+                        : truncate(post.content, 20)}
+                      {post.content.length > 20 && (
+                        <button
+                          onClick={() => toggleExpanded(post._id)}
+                          className="text-blue-500 ml-1"
+                        >
+                          {expandedPosts[post._id] ? "Show less" : "Read more"}
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                  <td className="border px-2 py-1">
+                    {post.platform?.join(", ")}
+                  </td>
+                  <td className="border px-2 py-1">
+                    {new Date(post.scheduleAt).toLocaleString()}
+                  </td>
+                  <td className="border px-2 py-1">
+                    <span
+                      className={
+                        post.status === "pending"
+                          ? "bg-yellow-200 text-yellow-800 px-2 py-1 rounded text-sm"
+                          : post.status === "scheduled"
+                          ? "bg-blue-200 text-blue-800 px-2 py-1 rounded text-sm"
+                          : post.status === "posted"
+                          ? "bg-green-200 text-green-800 px-2 py-1 rounded text-sm"
+                          : "bg-gray-200 text-gray-800 px-2 py-1 rounded text-sm"
+                      }
+                    >
+                      {post.status}
+                    </span>
+                  </td>
+                  <td className="border px-2 py-1 flex gap-2">
+                    <Link
+                      to={`/posts/edit/${post._id}`}
+                      className="text-blue-500 hover:underline"
+                    >
+                      Edit
+                    </Link>
+                    <button
+                      onClick={() => handleDelete(post._id)}
+                      className="text-red-500 hover:underline"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       )}

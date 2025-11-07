@@ -10,6 +10,7 @@ import { CreatePost } from "./pages/CreatePost";
 import { AuthProvider } from "../context/AuthContext";
 import { Navbar } from "../Components/Navbar";
 import { ProtectedRoute } from "../Components/ProtectedRoute";
+import AnalyticsPage from "./pages/AnalyticsPage";
 
 function App() {
   return (
@@ -21,13 +22,20 @@ function App() {
         {/* Public routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-
         {/* Protected routes */}
         <Route
           path="/"
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/analytics"
+          element={
+            <ProtectedRoute>
+              <AnalyticsPage />
             </ProtectedRoute>
           }
         />

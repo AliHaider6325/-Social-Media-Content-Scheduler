@@ -20,6 +20,9 @@ export const Navbar = () => {
         >
           Create Post
         </Link>
+        <Link to="/analytics" className="ml-4">
+          Analytics
+        </Link>
       </div>
 
       <button

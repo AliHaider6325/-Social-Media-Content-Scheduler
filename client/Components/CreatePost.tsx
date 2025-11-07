@@ -84,6 +84,9 @@ export const CreateEditPost = () => {
         const err = await res.json();
         throw new Error(err.message || "Failed to save post");
       }
+      toast.success(
+        id ? "Post updated successfully" : "Post created successfully"
+      );
 
       navigate("/posts"); // go back to posts list
     } catch (err: any) {
