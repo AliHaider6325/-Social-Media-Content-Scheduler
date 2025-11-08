@@ -23,6 +23,8 @@ export const Login = () => {
   // Abstracted API logic into a local function if not using the 'login' function from context
   // If you are using the full AuthContext from the previous response, you should replace this entire handleSubmit
   // with: authContext.login(email, password);
+  console.log(API_URL); // add this temporarily
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
