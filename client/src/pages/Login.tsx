@@ -6,7 +6,6 @@ import { useAuth } from "../../context/AuthContext";
 // const API_URL =
 //   "https://social-media-content-scheduler-production.up.railway.app/api";
 const API_URL = import.meta.env.VITE_API_URL;
-
 // Using icons for professional input fields
 import { FaEnvelope, FaLock, FaSignInAlt, FaSpinner } from "react-icons/fa";
 
