@@ -21,7 +21,8 @@ Usage
 Acknowledgements
 
 # Features
-*User Authentication*
+
+_User Authentication_
 
 Registration, login, and logout
 
@@ -29,7 +30,7 @@ JWT-based authentication
 
 Password hashing using bcrypt
 
-*Post Management*
+_Post Management_
 
 Create, edit, delete posts
 
@@ -41,7 +42,7 @@ Select multiple platforms per post
 
 Post statuses: draft, scheduled, published, failed
 
-*Scheduling Logic*
+_Scheduling Logic_
 
 Background job publishes posts at their scheduled time
 
@@ -49,13 +50,13 @@ Maintains publication logs
 
 Handles multiple posts scheduled at the same time
 
-*Dashboard*
+_Dashboard_
 
 Post statistics (total, scheduled, published, by platform)
 
 Upcoming posts preview (next 5 posts)
 
-*Frontend*
+_Frontend_
 
 Responsive, mobile-friendly UI
 
@@ -63,7 +64,7 @@ Form validation and error handling
 
 Protected routes for authenticated users
 
-*Security*
+_Security_
 
 Authorization checks
 
@@ -71,7 +72,7 @@ Input sanitization
 
 JWT-protected API routes
 
-*Tech Stack*
+_Tech Stack_
 
 Frontend: React, TailwindCSS, React Router, react-hot-toast, react-icons
 
@@ -84,49 +85,49 @@ Scheduler: node-cron
 Authentication: JWT, bcrypt
 
 # Setup Instructions
+
 Clone the Repository
 git clone https://github.com/AliHaider6325/-Social-Media-Content-Scheduler
 
 Install Dependencies
 
-*Backend*
+_Backend_
 
 cd server
 
 npm install
 
-*Frontend*
+_Frontend_
 
 cd client
 
 npm install
 
-*Setup Environment Variables*
+_Setup Environment Variables_
 
 Create a .env file in the backend folder using the template below.
 
 Start the Application
 
-*Backend*
+_Backend_
 
 cd backend
 
 npm run dev
 
-*Frontend*
+_Frontend_
 
 cd frontend
 
 npm run dev
 
+_Open your browser:_
 
-*Open your browser:*
+Frontend: https://social-media-content-scheduler.vercel.app
 
-Frontend: http://localhost:3000
+Backend: https://social-media-content-scheduler-production.up.railway.app
 
-Backend: http://localhost:5000
-
-*Environment Variables*
+_Environment Variables_
 
 Create a .env file in the backend root:
 
@@ -136,36 +137,37 @@ MONGO_URI=..
 JWT_SECRET=your_jwt_secret_key
 
 # API Documentation
-*Authentication*
 
-Method	Endpoint	Description	Body
+_Authentication_
 
-POST	/api/auth/register	Register new user	{ email, password }
+Method Endpoint Description Body
 
-POST	/api/auth/login	Login user	{ email, password }
+POST /api/auth/register Register new user { email, password }
 
-POST	/api/auth/logout	Logout user	N/A
+POST /api/auth/login Login user { email, password }
 
-*Posts*
+POST /api/auth/logout Logout user N/A
 
-Method	Endpoint	Description	Body
+_Posts_
 
-POST	/api/posts	Create a new post	{ content, platforms, scheduleAt, imageUrl? }
+Method Endpoint Description Body
 
-GET	/api/posts	Get all posts (paginated)	?page=1&limit=10&status=scheduled
+POST /api/posts Create a new post { content, platforms, scheduleAt, imageUrl? }
 
-GET	/api/posts/:id	Get a single post	N/A
+GET /api/posts Get all posts (paginated) ?page=1&limit=10&status=scheduled
 
-PUT	/api/posts/:id	Update a post	{ content?, platforms?, scheduleAt?, imageUrl? }
+GET /api/posts/:id Get a single post N/A
 
-DELETE	/api/posts/:id	Delete a post	N/A
+PUT /api/posts/:id Update a post { content?, platforms?, scheduleAt?, imageUrl? }
+
+DELETE /api/posts/:id Delete a post N/A
 Dashboard
 
-*Method	Endpoint	Description*
+_Method Endpoint Description_
 
-GET	/api/dashboard/stats	Get post statistics
+GET /api/dashboard/stats Get post statistics
 
-GET	/api/dashboard/upcoming	Get next 5 scheduled posts
+GET /api/dashboard/upcoming Get next 5 scheduled posts
 Assumptions
 
 Users can schedule posts only for future dates.
@@ -182,6 +184,10 @@ Frontend UI prioritizes functionality over design (assessment requirement).
 
 Register a new user or login using demo credentials.
 
+**Demo credentials:**
+email:alihaider@gmail.com
+password:alihaider1234
+
 Navigate to Create Post to schedule posts.
 
 Select one or multiple platforms, schedule a date/time, and optionally add an image URL.
@@ -195,7 +201,7 @@ Dashboard shows statistics and upcoming posts.
 MERN stack tutorials and examples
 
 node-cron
- for scheduling
+for scheduling
 
 TailwindCSS
- for frontend styling
+for frontend styling
