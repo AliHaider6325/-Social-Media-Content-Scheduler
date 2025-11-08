@@ -92,9 +92,12 @@ export default function AnalyticsPage() {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Not authenticated");
 
-      const res = await fetch("http://localhost:5000/api/posts/platforms", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(
+        "https://social-media-content-scheduler-production.up.railway.app/api/posts/platforms",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));

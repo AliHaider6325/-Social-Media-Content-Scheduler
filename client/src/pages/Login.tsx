@@ -3,7 +3,9 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 // Assuming you have defined API_URL or hardcoding for demonstration
-const API_URL = "http://localhost:5000/api";
+// const API_URL =
+//   "https://social-media-content-scheduler-production.up.railway.app/api";
+const API_URL = import.meta.env.VITE_API_URL;
 
 // Using icons for professional input fields
 import { FaEnvelope, FaLock, FaSignInAlt, FaSpinner } from "react-icons/fa";

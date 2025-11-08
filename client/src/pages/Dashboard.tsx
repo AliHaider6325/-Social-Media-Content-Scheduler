@@ -62,7 +62,8 @@ const INITIAL_STATS: Stats = {
   platforms: {},
 };
 
-const BASE_URL = "http://localhost:5000/api"; // Moved outside component or use context
+const BASE_URL =
+  "https://social-media-content-scheduler-production.up.railway.app/api"; // Moved outside component or use context
 
 // --------------------------------------------------------------------------
 

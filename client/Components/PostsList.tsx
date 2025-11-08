@@ -117,7 +117,8 @@ export function PostsList() {
   };
 
   // Memoized URL calculation
-  const API_BASE_URL = "http://localhost:5000/api/posts";
+  const API_BASE_URL =
+    "https://social-media-content-scheduler-production.up.railway.app/api/posts";
 
   const fetchPosts = useCallback(
     async (currentPage: number, currentFilter: string) => {
