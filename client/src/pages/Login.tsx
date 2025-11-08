@@ -5,7 +5,8 @@ import { useAuth } from "../../context/AuthContext";
 import { FaEnvelope, FaLock, FaSignInAlt, FaSpinner } from "react-icons/fa";
 
 // Dynamically pick backend URL
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_URL =
+  "https://social-media-content-scheduler-production.up.railway.app";
 
 export const Login = () => {
   const [email, setEmail] = useState("");
