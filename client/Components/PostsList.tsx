@@ -1,6 +1,6 @@
 // PostsList.tsx - Enhanced UI/UX
-import { useState, useEffect, useCallback, useMemo, type JSX } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect, useCallback, type JSX } from "react";
+import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import {
   FaEdit,
@@ -10,7 +10,6 @@ import {
   FaExternalLinkAlt,
   FaClock,
   FaCheckCircle,
-  FaSpinner,
   FaTwitter,
   FaFacebook,
   FaInstagram,
@@ -98,7 +97,6 @@ export function PostsList() {
     {}
   );
   const limit = 10;
-  const navigate = useNavigate();
 
   // Use a map of the keys we need to display filters dynamically
   const FILTER_OPTIONS: { key: Post["status"] | "all"; label: string }[] = [

@@ -50,7 +50,7 @@ const KEY_TO_COLOR: { [key: string]: string } = {
 };
 
 // Custom Tooltip for the chart
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     // Look up the key based on the name (label)
     const key = payload[0].payload.key;

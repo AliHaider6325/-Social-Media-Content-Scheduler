@@ -40,7 +40,7 @@ const PLATFORM_MAP = [
 ];
 
 // Original list for simple iteration (if needed, but using MAP is better for UI)
-const PLATFORMS_KEYS = ["Twitter", "Facebook", "Instagram"];
+// const PLATFORMS_KEYS = ["Twitter", "Facebook", "Instagram"];
 
 export const CreatePost = () => {
   const { token } = useAuth();
