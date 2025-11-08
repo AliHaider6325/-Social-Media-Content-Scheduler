@@ -291,7 +291,7 @@ export function Dashboard() {
           {upcoming.map((post) => (
             <div
               key={post._id}
-              className="bg-white p-5 rounded-xl shadow-md flex flex-col md:flex-row justify-between items-start md:items-center transition duration-200 hover:shadow-lg border-l-4 border-yellow-500"
+              className="bg-white overflow-hidden p-5 rounded-xl shadow-md flex flex-col md:flex-row justify-between items-start md:items-center transition duration-200 hover:shadow-lg border-l-4 border-yellow-500"
             >
               {/* Content & Platforms */}
               <div className="mb-3 md:mb-0 md:w-3/5">

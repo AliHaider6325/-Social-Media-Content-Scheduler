@@ -1,31 +1,22 @@
 import { useAuth } from "../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-// Assuming you have access to icons (e.g., react-icons/fa or heroicons)
-// For demonstration, I'll use simple characters or generic class names.
 
 export const Navbar = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
-  // State to manage the visibility of the mobile menu
   const [isOpen, setIsOpen] = useState(false);
 
-  // Function to handle logout and navigation
   const handleLogout = () => {
     logout();
     navigate("/login");
-    setIsOpen(false); // Close menu on action
+    setIsOpen(false);
   };
-
-  // Primary Color: Deep Teal (bg-teal-800)
-  // Accent/Button Color: Bright Yellow (bg-yellow-400)
 
   return (
     <nav className="sticky top-0 z-10 bg-teal-800 text-white shadow-lg">
       <div className="container mx-auto px-4 py-3">
-        {/* Main Flex Container for Desktop & Mobile Header */}
         <div className="flex justify-between items-center">
-          {/* Branding/Logo Link */}
           <Link
             to="/"
             className="text-xl font-bold tracking-wider text-teal-100 hover:text-white transition duration-300"
@@ -36,9 +27,7 @@ export const Navbar = () => {
             Scheduler Pro
           </Link>
 
-          {/* Desktop Menu - Hidden on small screens */}
           <div className="hidden md:flex items-center space-x-6">
-            {/* Navigation Links */}
             <Link
               to="/"
               className="text-teal-200 hover:text-white transition duration-300 px-3 py-2 rounded-lg"

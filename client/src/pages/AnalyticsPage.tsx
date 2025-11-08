@@ -9,59 +9,44 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
-import {
-  FaChartBar,
-  FaClock,
-  FaCheckCircle,
-  FaPencilAlt,
-  FaTimesCircle,
-} from "react-icons/fa";
+import { FaChartBar, FaTwitter, FaFacebook, FaInstagram } from "react-icons/fa";
 
 interface Stats {
-  scheduled: number;
-  posted: number;
-  draft: number;
-  failed: number;
+  Twitter: number;
+  Facebook: number;
+  Instagram: number;
 }
 
 // Define Status Colors and Icons for consistency across the app
 const STATUS_VISUALS = {
   scheduled: {
     color: "#FFCA28",
-    icon: FaClock,
-    label: "Scheduled",
-    textColor: "text-yellow-700",
-    bg: "bg-yellow-100",
+    icon: FaTwitter,
+    label: "Twitter",
+    textColor: "text-white",
+    bg: "bg-blue-400",
   },
   published: {
     color: "#2E7D32",
-    icon: FaCheckCircle,
-    label: "Published",
+    icon: FaFacebook,
+    label: "Facebook",
     textColor: "text-green-700",
     bg: "bg-green-100",
   },
   draft: {
-    color: "#9E9E9E",
-    icon: FaPencilAlt,
-    label: "Drafts",
-    textColor: "text-gray-700",
-    bg: "bg-gray-100",
-  },
-  failed: {
-    color: "#D32F2F",
-    icon: FaTimesCircle,
-    label: "Failed",
-    textColor: "text-red-700",
+    color: "2E7D32",
+    icon: FaInstagram,
+    label: "Instagram",
+    textColor: "text-red-400",
     bg: "bg-red-100",
   },
 };
 
 // Map keys to colors for the chart fill function
 const KEY_TO_COLOR: { [key: string]: string } = {
-  scheduled: STATUS_VISUALS.scheduled.color,
-  published: STATUS_VISUALS.published.color,
-  draft: STATUS_VISUALS.draft.color,
-  failed: STATUS_VISUALS.failed.color,
+  Twitter: STATUS_VISUALS.scheduled.color,
+  Instagram: STATUS_VISUALS.published.color,
+  Facebook: STATUS_VISUALS.draft.color,
 };
 
 // Custom Tooltip for the chart
@@ -89,13 +74,6 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
-// Function to determine Bar color based on index/data point
-const getBarColor = (data: any, index: number) => {
-  // This function runs once per bar. We rely on the data key ('key') to find the color.
-  const key = data.key.toLowerCase();
-  return KEY_TO_COLOR[key] || "#000000"; // Default to black if not found
-};
-
 export default function AnalyticsPage() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -114,7 +92,7 @@ export default function AnalyticsPage() {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Not authenticated");
 
-      const res = await fetch("http://localhost:5000/api/posts/stats", {
+      const res = await fetch("http://localhost:5000/api/posts/platforms", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -125,10 +103,9 @@ export default function AnalyticsPage() {
 
       const data: Stats = await res.json();
       setStats({
-        scheduled: data.scheduled ?? 0,
-        posted: data.posted ?? 0,
-        draft: data.draft ?? 0,
-        failed: data.failed ?? 0,
+        Facebook: data.Facebook ?? 0,
+        Instagram: data.Instagram ?? 0,
+        Twitter: data.Twitter ?? 0,
       });
     } catch (err: any) {
       console.error("Error fetching stats:", err);
@@ -144,10 +121,9 @@ export default function AnalyticsPage() {
     if (!stats) return [];
     // Ensure the array structure includes the 'key' for color lookup
     return [
-      { name: "Scheduled", value: stats.scheduled, key: "scheduled" },
-      { name: "Published", value: stats.posted, key: "published" },
-      { name: "Drafts", value: stats.draft, key: "draft" },
-      { name: "Failed", value: stats.failed, key: "failed" },
+      { name: "Twitter", value: stats.Twitter, key: "scheduled" },
+      { name: "Facebook", value: stats.Facebook, key: "draft" },
+      { name: "Instagram", value: stats.Instagram, key: "published" },
     ];
   }, [stats]);
 
@@ -212,34 +188,24 @@ export default function AnalyticsPage() {
             {/* Scheduled */}
             <StatCard
               title={STATUS_VISUALS.scheduled.label}
-              value={stats.scheduled}
+              value={stats.Twitter}
               Icon={STATUS_VISUALS.scheduled.icon}
               color={STATUS_VISUALS.scheduled.textColor}
               bg={STATUS_VISUALS.scheduled.bg}
             />
-            {/* Published */}
             <StatCard
               title={STATUS_VISUALS.published.label}
-              value={stats.posted}
+              value={stats.Facebook}
               Icon={STATUS_VISUALS.published.icon}
               color={STATUS_VISUALS.published.textColor}
               bg={STATUS_VISUALS.published.bg}
             />
-            {/* Draft */}
             <StatCard
               title={STATUS_VISUALS.draft.label}
-              value={stats.draft}
+              value={stats.Instagram}
               Icon={STATUS_VISUALS.draft.icon}
               color={STATUS_VISUALS.draft.textColor}
               bg={STATUS_VISUALS.draft.bg}
-            />
-            {/* Failed */}
-            <StatCard
-              title={STATUS_VISUALS.failed.label}
-              value={stats.failed}
-              Icon={STATUS_VISUALS.failed.icon}
-              color={STATUS_VISUALS.failed.textColor}
-              bg={STATUS_VISUALS.failed.bg}
             />
           </div>
 
@@ -280,11 +246,9 @@ export default function AnalyticsPage() {
                     }}
                   />
 
-                  {/* Single Bar component referencing the 'value' dataKey */}
                   <Bar
                     dataKey="value"
                     name="Status Count"
-                    // Custom fill function to get color based on the data point's 'key' property
                     fill="#005F5A"
                     radius={[6, 6, 0, 0]}
                     isAnimationActive={true}

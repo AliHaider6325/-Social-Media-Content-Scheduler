@@ -32,9 +32,9 @@ export async function getPosts(req, res) {
     page = parseInt(page);
     limit = parseInt(limit);
 
-    const query = { user: req.user.id }; // only user own posts
+    const query = { user: req.user._id }; // only logged-in user's posts
 
-    if (status) query.status = status; // optional filter
+    if (status) query.status = status;
 
     const posts = await Post.find(query)
       .sort({ createdAt: -1 })
@@ -54,6 +54,7 @@ export async function getPosts(req, res) {
     return res.status(500).json({ message: "Error getting posts" });
   }
 }
+
 
 
 export async function updatePost(req, res) {

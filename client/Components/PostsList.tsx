@@ -311,12 +311,18 @@ export function PostsList() {
                     <p className="text-sm font-medium text-gray-500 mb-1">
                       Content
                     </p>
-                    <div className="text-gray-800 text-sm">
-                      {isExpanded ? post.content : truncate(post.content, 150)}
-                      {post.content.length > 150 && (
+                    <div
+                      className={`text-gray-800 text-sm whitespace-pre-wrap transition-all duration-300 ${
+                        isExpanded
+                          ? "max-h-52 overflow-y-auto p-3 rounded-xl from-white to-gray-50 border border-gray-200 shadow-inner backdrop-blur-sm"
+                          : ""
+                      }`}
+                    >
+                      {isExpanded ? post.content : truncate(post.content, 10)}
+                      {post.content.length > 10 && (
                         <button
                           onClick={() => toggleExpanded(post._id)}
-                          className="text-teal-600 ml-1 text-xs font-semibold hover:underline"
+                          className="text-teal-600 ml-2 text-xs font-semibold hover:underline hover:text-teal-800 transition-all duration-200"
                         >
                           {isExpanded ? " Show less" : " Read more"}
                         </button>

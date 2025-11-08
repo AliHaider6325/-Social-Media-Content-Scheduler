@@ -4,7 +4,6 @@ import { API_URL } from "../src/api/api";
 import { useAuth } from "../context/AuthContext";
 import toast from "react-hot-toast";
 
-// --- START: Added Icons for better UX (Assuming use of react-icons) ---
 import {
   FaFacebook,
   FaTwitter,
@@ -37,7 +36,7 @@ const PLATFORMS = [
     icon: FaInstagram,
     color: "text-pink-600",
   },
-]; // used for mapping UI components
+];
 
 export const CreateEditPost = () => {
   const { token } = useAuth();
@@ -87,14 +86,14 @@ export const CreateEditPost = () => {
         });
       } catch (err: any) {
         toast.error(err.message);
-        navigate("/posts"); // Redirect on failure to load
+        navigate("/posts");
       }
     };
     fetchPost();
   }, [id, token, navigate]);
 
   const handlePlatformChange = (platformKey: string) => {
-    setPlatformError(""); // Clear platform error on interaction
+    setPlatformError("");
     setPost((prev) => ({
       ...prev,
       platform: prev.platform.includes(platformKey)
@@ -128,7 +127,6 @@ export const CreateEditPost = () => {
     setPlatformError("");
     setScheduleError("");
 
-    // --- Validation Checks (Matching the current logic) ---
     const trimmedContent = post.content.trim();
     if (trimmedContent.length === 0 || trimmedContent.length > MAX_CHARACTERS) {
       setContentError("Content is required and max 500 characters.");
@@ -142,7 +140,6 @@ export const CreateEditPost = () => {
       setScheduleError("Schedule date must be in the future.");
       return toast.error("Schedule date must be in the future.");
     }
-    // --- End Validation Checks ---
 
     setLoading(true);
     try {
@@ -152,7 +149,6 @@ export const CreateEditPost = () => {
       const payload = {
         ...post,
         content: trimmedContent,
-        // The platforms are already lowercase from the PLATFORMS array keys
         platform: post.platform,
       };
 
@@ -183,9 +179,7 @@ export const CreateEditPost = () => {
 
   return (
     <div className="container mx-auto p-4 md:p-8">
-      {/* Outer Card Container: Uses subtle shadow and rounded corners */}
       <div className="max-w-2xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-2xl border border-gray-100">
-        {/* Header */}
         <h2 className="text-3xl font-extrabold mb-6 text-teal-800 flex items-center">
           {isEditing ? (
             <FaEdit className="mr-3" />
@@ -279,7 +273,6 @@ export const CreateEditPost = () => {
             )}
           </div>
 
-          {/* 3. Schedule Date & Time */}
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
             <label
               htmlFor="scheduleAt"
@@ -306,7 +299,6 @@ export const CreateEditPost = () => {
             )}
           </div>
 
-          {/* 4. Image URL */}
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
             <label
               htmlFor="imageUrl"
@@ -328,7 +320,6 @@ export const CreateEditPost = () => {
                 <p className="text-xs font-medium text-gray-600 mb-1">
                   Image Preview:
                 </p>
-                {/* Basic Image Preview: Good UX for checking the link */}
                 <img
                   src={post.imageUrl}
                   alt="Image Preview"
@@ -341,7 +332,6 @@ export const CreateEditPost = () => {
             )}
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
             className={`
